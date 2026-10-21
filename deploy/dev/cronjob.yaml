@@ -1,0 +1,29 @@
+# Teaching template: replace the image with the EXACT image from the release job.
+# This schedules toy calculations and prints JSON to the container logs.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: risk-report
+spec:
+  schedule: "0 6 * * *"
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 180
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: risk-report
+              image: ghcr.io/your-org/your-repo:replace-with-commit-sha
+              resources:
+                requests:
+                  cpu: "100m"
+                  memory: "64Mi"
+                limits:
+                  cpu: "500m"
+                  memory: "128Mi"

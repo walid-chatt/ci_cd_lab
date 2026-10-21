@@ -1,0 +1,20 @@
+# Teaching template: requires an existing Argo CD installation and Kubernetes cluster.
+# Register this once with Argo CD, using your team's normal access process.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: risk-lab-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/YOUR-ACCOUNT/YOUR-REPO.git
+    targetRevision: main
+    path: deploy/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: risk-lab
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    # No automated block: this example requires clicking Sync in Argo CD.

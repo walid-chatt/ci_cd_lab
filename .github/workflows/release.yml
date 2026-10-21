@@ -1,0 +1,44 @@
+name: Release image (manual)
+
+# Optional second lesson: runs only when you explicitly click Run workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v9
+        with:
+          version: "0.13.4"
+          python-version: "3.12"
+      - run: bash scripts/ci.sh
+
+  publish:
+    needs: checks  # A red checks job prevents publication.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build and publish the checked commit to GitHub Container Registry
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_USER: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          image="ghcr.io/${GITHUB_REPOSITORY,,}:${GITHUB_SHA}"
+          printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$GH_USER" --password-stdin
+          docker build -t "$image" .
+          docker run --rm "$image"
+          docker push "$image"
+          printf 'Published image: %s\n' "$image" >> "$GITHUB_STEP_SUMMARY"

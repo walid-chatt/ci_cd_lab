@@ -1,0 +1,12 @@
+# Equivalent local checks for a GitLab-hosted copy of this practice repository.
+image: ghcr.io/astral-sh/uv:0.13.4-python3.12-trixie-slim
+
+variables:
+  UV_LINK_MODE: copy
+
+stages: [test]
+
+checks:
+  stage: test
+  script:
+    - bash scripts/ci.sh
