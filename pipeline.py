@@ -15,7 +15,7 @@ def stress_pnl(quantity: float, price: float, shock: float) -> float:
         raise ValueError("Inputs must be finite numbers")
     if price <= 0:
         raise ValueError("Toy price must be positive")
-    return round(abs(quantity * price * shock), 2)
+    return round(quantity * price * shock, 2)
 
 
 def main() -> None:
