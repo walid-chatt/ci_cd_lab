@@ -108,7 +108,6 @@ workflow runs only when you explicitly choose it in GitHub Actions. Choose main.
 It reruns checks, then builds the Dockerfile, runs the image once as a smoke test,
 and uploads it to GitHub Container Registry with a tag based on the source commit.
 Its permissions and your organization/package policies must allow publication.
-
 Copy the exact published image into deploy/dev/cronjob.yaml. Commit that manifest
 change on a new branch and have it reviewed/merged. A separate deployment-config
 repository is common in teams; this lab keeps the folders in one repo for clarity.
